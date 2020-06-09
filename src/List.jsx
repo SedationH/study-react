@@ -1,6 +1,8 @@
 import React from 'react'
 
-function List({ list }) {
+function List({
+  list
+}) {
 
   return (
     list.map(item => (

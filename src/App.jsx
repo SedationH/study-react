@@ -31,8 +31,8 @@ function App() {
     setSearchValue(e.target.value)
   }
 
-  const listFiltered = list =>
-    list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+  const listFiltered = list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+
 
   return (
     <>
@@ -43,7 +43,7 @@ function App() {
       />
       <hr />
       <List
-        list={listFiltered(list)}
+        list={listFiltered}
       />
     </>
   )
