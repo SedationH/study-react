@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import List from './List'
 import Search from './Search'
+import TryReducer from './TryReducer'
 
 
 const initialList = [
@@ -42,10 +43,22 @@ const getAsyncStories = () => (
   })
 )
 
+const listReducer = (state, action) => {
+  console.log(state, action)
+  switch (action.type) {
+    case 'SET':
+      return action.payload
+    case 'REMOVE':
+      return state.filter(item => item.objectID !== action.objectID)
+    default:
+      return state
+  }
+}
+
 function App() {
 
   const [searchValue, setSearchValue] = useCustomHook()
-  const [list, setList] = useState([])
+  const [list, ListDispatch] = useReducer(listReducer, [])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -54,7 +67,7 @@ function App() {
       .then(
         res => {
           setLoading(false)
-          setList(res)
+          ListDispatch({ type: 'SET', payload: res })
         }
       )
       .catch(
@@ -63,17 +76,18 @@ function App() {
           setError(true)
         }
       )
-  },[])
+  }, [])
   // 如果[]省略，那么每次都会重新发起异步请求
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
   }
 
-  const handleButtonClick = id => {
-    setList(
-      list.filter(item => id !== item.objectID)
-    )
+  const handleButtonClick = objectID => {
+    ListDispatch({
+      type: 'REMOVE',
+      objectID
+    })
   }
 
   const listFiltered = list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
@@ -94,6 +108,8 @@ function App() {
         error={error}
         handleButtonClick={handleButtonClick}
       />
+      <hr />
+      <TryReducer />
     </>
   )
 }
