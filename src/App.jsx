@@ -22,13 +22,18 @@ const list = [
   },
 ];
 
+
 function App() {
 
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState('r')
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
   }
+
+  const listFiltered = list =>
+    list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+
   return (
     <>
       <h1>My Hacker Stories</h1>
@@ -38,7 +43,7 @@ function App() {
       />
       <hr />
       <List
-        list={list}
+        list={listFiltered(list)}
       />
     </>
   )
