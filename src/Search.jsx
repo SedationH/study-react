@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 
 function Search({
   handleInputChange,
-  value
+  value,
+  children
 }) {
   const inputRef = React.useRef()
   /**
@@ -17,7 +18,7 @@ function Search({
 
   return (
     <>
-      <label htmlFor="search" >Search: </label>
+      <label htmlFor="search" >{children}</label>
       <input
         ref={inputRef}
         type="text"

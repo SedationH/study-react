@@ -3,7 +3,7 @@ import List from './List'
 import Search from './Search'
 
 
-const list = [
+const initialList = [
   {
     title: 'React',
     url: 'https://reactjs.org/',
@@ -24,7 +24,7 @@ const list = [
 
 const useCustomHook = () => {
   const [searchValue, setSearchValue] = useState(
-    localStorage.getItem('search') || 'r'
+    localStorage.getItem('search') || ''
   )
 
   useEffect(() => {
@@ -34,9 +34,29 @@ const useCustomHook = () => {
   return [searchValue, setSearchValue]
 }
 
+const getAsyncStories = () => (
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(initialList)
+    }, 2000)
+  })
+)
+
 function App() {
 
   const [searchValue, setSearchValue] = useCustomHook()
+  const [list, setList] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getAsyncStories()
+      .then(
+        res => {
+          setLoading(false)
+          setList(res)
+        }
+      )
+  })
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
@@ -50,9 +70,12 @@ function App() {
       <Search
         handleInputChange={handleInputChange}
         value={searchValue}
-      />
+      >
+        <strong>Search: </strong>
+      </Search>
       <hr />
       <List
+        loading={loading}
         list={listFiltered}
       />
     </>

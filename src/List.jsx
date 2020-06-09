@@ -1,20 +1,26 @@
 import React from 'react'
 
 function List({
-  list
+  list,
+  loading
 }) {
-
   return (
-    list.map(item => (
-      <div key={item.objectID}>
-        <span>
-          <a href={item.url}>{item.title}</a>
-        </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-      </div>
-    ))
+    <>
+      {
+        loading ?
+          <div>Loading</div> :
+          list.map(item => (
+            <div key={item.objectID}>
+              <span>
+                <a href={item.url}>{item.title}</a>
+              </span>
+              <span>{item.author}</span>
+              <span>{item.num_comments}</span>
+              <span>{item.points}</span>
+            </div>
+          ))
+      }
+    </>
   )
 }
 
