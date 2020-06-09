@@ -38,7 +38,7 @@ const getAsyncStories = () => (
   new Promise(resolve => {
     setTimeout(() => {
       resolve(initialList)
-    }, 2000)
+    }, 100)
   })
 )
 
@@ -55,7 +55,6 @@ function App() {
         res => {
           setLoading(false)
           setList(res)
-          throw Error(1)
         }
       )
       .catch(
@@ -64,10 +63,17 @@ function App() {
           setError(true)
         }
       )
-  })
+  },[])
+  // 如果[]省略，那么每次都会重新发起异步请求
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
+  }
+
+  const handleButtonClick = id => {
+    setList(
+      list.filter(item => id !== item.objectID)
+    )
   }
 
   const listFiltered = list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
@@ -86,6 +92,7 @@ function App() {
         loading={loading}
         list={listFiltered}
         error={error}
+        handleButtonClick={handleButtonClick}
       />
     </>
   )

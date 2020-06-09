@@ -3,7 +3,8 @@ import React from 'react'
 function List({
   list,
   loading,
-  error
+  error,
+  handleButtonClick
 }) {
   return (
     <>
@@ -21,6 +22,7 @@ function List({
                   <span>{item.author}</span>
                   <span>{item.num_comments}</span>
                   <span>{item.points}</span>
+                  <button onClick={() => handleButtonClick(item.objectID)}>Remove</button>
                 </div>
               ))
           )
