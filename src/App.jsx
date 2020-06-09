@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import List from './List'
 import Search from './Search'
 
@@ -22,17 +22,27 @@ const list = [
   },
 ];
 
+const useCustomHook = () => {
+  const [searchValue, setSearchValue] = useState(
+    localStorage.getItem('search') || 'r'
+  )
+
+  useEffect(() => {
+    localStorage.setItem('search', searchValue)
+  })
+
+  return [searchValue, setSearchValue]
+}
 
 function App() {
 
-  const [searchValue, setSearchValue] = useState('r')
+  const [searchValue, setSearchValue] = useCustomHook()
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
   }
 
   const listFiltered = list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-
 
   return (
     <>
