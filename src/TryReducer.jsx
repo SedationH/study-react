@@ -7,6 +7,8 @@ const cntReducer = (state, action) => {
       return state + 1
     case "DEC":
       return state - 1
+    default:
+      return state
   }
 }
 

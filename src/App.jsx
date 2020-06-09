@@ -38,59 +38,98 @@ const useCustomHook = () => {
 const getAsyncStories = () => (
   new Promise(resolve => {
     setTimeout(() => {
-      resolve(initialList)
+      resolve({
+        data: {
+          stories: initialList
+        }
+      })
     }, 100)
   })
 )
 
-const listReducer = (state, action) => {
+/**
+ * loading error都是和list的获取相关的
+ * 因此状态管理都放在一起更好管理
+ * state ={
+ *  list,
+ *  loading,
+ *  error
+ * }
+ */
+
+const storiesReducer = (state, action) => {
   console.log(state, action)
   switch (action.type) {
-    case 'SET':
-      return action.payload
-    case 'REMOVE':
-      return state.filter(item => item.objectID !== action.objectID)
+    case 'STORIES_FETCH_INIT':
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case 'STORIES_FETCH_SUCCESS':
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case 'STORIES_FETCH_FAILURE':
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    case 'REMOVE_STORY':
+      return {
+        ...state,
+        data: state.data.filter(
+          story => action.payload.objectID !== story.objectID
+        ),
+      };
     default:
-      return state
+      throw new Error();
   }
 }
 
 function App() {
 
   const [searchValue, setSearchValue] = useCustomHook()
-  const [list, ListDispatch] = useReducer(listReducer, [])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+
+  const [stories, dispatchStories] = useReducer(
+    storiesReducer,
+    { data: [], isLoading: false, isError: false }
+  );
+
+  const { isLoading, data, isError } = stories
 
   useEffect(() => {
+    dispatchStories({ type: 'STORIES_FETCH_INIT' });
+
     getAsyncStories()
-      .then(
-        res => {
-          setLoading(false)
-          ListDispatch({ type: 'SET', payload: res })
-        }
-      )
-      .catch(
-        reason => {
-          console.log(Error(reason))
-          setError(true)
-        }
-      )
-  }, [])
+      .then(result => {
+        dispatchStories({
+          type: 'STORIES_FETCH_SUCCESS',
+          payload: result.data.stories,
+        });
+      })
+      .catch(() =>
+        dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
+      );
+  }, []);
   // 如果[]省略，那么每次都会重新发起异步请求
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
   }
 
-  const handleButtonClick = objectID => {
-    ListDispatch({
-      type: 'REMOVE',
-      objectID
-    })
+  const handleButtonClick = item => {
+    dispatchStories({
+      type: 'REMOVE_STORY',
+      payload: item,
+    });
   }
 
-  const listFiltered = list.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+  const listFiltered = data.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
 
   return (
     <>
@@ -103,9 +142,9 @@ function App() {
       </Search>
       <hr />
       <List
-        loading={loading}
+        loading={isLoading}
         list={listFiltered}
-        error={error}
+        error={isError}
         handleButtonClick={handleButtonClick}
       />
       <hr />
