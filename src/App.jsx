@@ -47,6 +47,7 @@ function App() {
   const [searchValue, setSearchValue] = useCustomHook()
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     getAsyncStories()
@@ -54,6 +55,13 @@ function App() {
         res => {
           setLoading(false)
           setList(res)
+          throw Error(1)
+        }
+      )
+      .catch(
+        reason => {
+          console.log(Error(reason))
+          setError(true)
         }
       )
   })
@@ -77,6 +85,7 @@ function App() {
       <List
         loading={loading}
         list={listFiltered}
+        error={error}
       />
     </>
   )
