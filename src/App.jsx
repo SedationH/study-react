@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from 'react';
+import React, { useReducer, useState, useEffect, useCallback } from 'react';
 import List from './List'
 import Search from './Search'
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
@@ -25,7 +25,6 @@ const useCustomHook = () => {
  */
 
 const storiesReducer = (state, action) => {
-  console.log(state, action)
   switch (action.type) {
     case 'STORIES_FETCH_INIT':
       return {
@@ -60,20 +59,22 @@ const storiesReducer = (state, action) => {
 
 function App() {
 
+
   const [searchValue, setSearchValue] = useCustomHook()
 
   const [stories, dispatchStories] = useReducer(
     storiesReducer,
     { data: [], isLoading: false, isError: false }
   );
+  const [url, setUrl] = useState(`${API_ENDPOINT}`)
 
   const { isLoading, data, isError } = stories
 
-  useEffect(() => {
+  const handleFetchStories = useCallback(() => {
     if (searchValue === '') return;
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(`${API_ENDPOINT}react`)
+    fetch(`${API_ENDPOINT + searchValue}`)
       .then(response => response.json())
       .then(result => {
         dispatchStories({
@@ -84,7 +85,11 @@ function App() {
       .catch(() =>
         dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
       );
-  }, [searchValue]);
+  }, [url])
+
+  useEffect(() => {
+    handleFetchStories()
+  }, [handleFetchStories]);
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
@@ -96,6 +101,9 @@ function App() {
       payload: item,
     });
   }
+  const handleSearchClick = () => {
+    setUrl(API_ENDPOINT + searchValue)
+  }
 
   const listFiltered = data.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
 
@@ -105,6 +113,7 @@ function App() {
       <Search
         handleInputChange={handleInputChange}
         value={searchValue}
+        handleSearchClick={handleSearchClick}
       >
         <strong>Search: </strong>
       </Search>

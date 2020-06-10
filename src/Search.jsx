@@ -3,7 +3,8 @@ import React, { useEffect } from 'react'
 function Search({
   handleInputChange,
   value,
-  children
+  children,
+  handleSearchClick
 }) {
   const inputRef = React.useRef()
   /**
@@ -11,7 +12,6 @@ function Search({
    * 提供了变化中不变化的方法
    */
   useEffect(() => {
-    console.log('focus')
     inputRef.current.focus()
   }, [inputRef])
 
@@ -26,6 +26,7 @@ function Search({
         onChange={handleInputChange}
         value={value}
       />
+      <button onClick={handleSearchClick}>Search</button>
     </>
   )
 }
