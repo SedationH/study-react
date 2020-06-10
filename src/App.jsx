@@ -1,27 +1,7 @@
 import React, { useReducer, useState, useEffect } from 'react';
 import List from './List'
 import Search from './Search'
-import TryReducer from './TryReducer'
-
-
-const initialList = [
-  {
-    title: 'React',
-    url: 'https://reactjs.org/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
 const useCustomHook = () => {
   const [searchValue, setSearchValue] = useState(
@@ -34,19 +14,6 @@ const useCustomHook = () => {
 
   return [searchValue, setSearchValue]
 }
-
-const getAsyncStories = () => (
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        data: {
-          stories: initialList
-        }
-      })
-    }, 100)
-  })
-)
-
 /**
  * loading error都是和list的获取相关的
  * 因此状态管理都放在一起更好管理
@@ -103,20 +70,21 @@ function App() {
   const { isLoading, data, isError } = stories
 
   useEffect(() => {
+    if (searchValue === '') return;
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    getAsyncStories()
+    fetch(`${API_ENDPOINT}react`)
+      .then(response => response.json())
       .then(result => {
         dispatchStories({
           type: 'STORIES_FETCH_SUCCESS',
-          payload: result.data.stories,
+          payload: result.hits,
         });
       })
       .catch(() =>
         dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
       );
-  }, []);
-  // 如果[]省略，那么每次都会重新发起异步请求
+  }, [searchValue]);
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
@@ -147,8 +115,6 @@ function App() {
         error={isError}
         handleButtonClick={handleButtonClick}
       />
-      <hr />
-      <TryReducer />
     </>
   )
 }
