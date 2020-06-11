@@ -18,15 +18,18 @@ function Search({
 
   return (
     <>
-      <label htmlFor="search" >{children}</label>
-      <input
-        ref={inputRef}
-        type="text"
-        id="search"
-        onChange={handleInputChange}
-        value={value}
-      />
-      <button onClick={handleSearchClick}>Search</button>
+      <form onSubmit={handleSearchClick} className="search-form">
+        <label className="label" htmlFor="search" >{children}</label>
+        <input
+          ref={inputRef}
+          type="text"
+          id="search"
+          onChange={handleInputChange}
+          value={value}
+          className="input"
+        />
+        <button type="submit" className="button button_large">Search</button>
+      </form>
     </>
   )
 }

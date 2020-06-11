@@ -1,7 +1,10 @@
 import React, { useReducer, useState, useEffect, useCallback } from 'react';
+import './App.css'
 import List from './List'
 import Search from './Search'
+import Axios from 'axios';
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
 
 const useCustomHook = () => {
   const [searchValue, setSearchValue] = useState(
@@ -71,15 +74,13 @@ function App() {
   const { isLoading, data, isError } = stories
 
   const handleFetchStories = useCallback(() => {
-    if (searchValue === '') return;
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(`${API_ENDPOINT + searchValue}`)
-      .then(response => response.json())
+    Axios(url)
       .then(result => {
         dispatchStories({
           type: 'STORIES_FETCH_SUCCESS',
-          payload: result.hits,
+          payload: result.data.hits,
         });
       })
       .catch(() =>
@@ -101,15 +102,14 @@ function App() {
       payload: item,
     });
   }
-  const handleSearchClick = () => {
+  const handleSearchClick = e => {
     setUrl(API_ENDPOINT + searchValue)
+    e.preventDefault()
   }
 
-  const listFiltered = data.filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-
   return (
-    <>
-      <h1>My Hacker Stories</h1>
+    <div className="container">
+      <h1 className="headline-primary">My Hacker Stories</h1>
       <Search
         handleInputChange={handleInputChange}
         value={searchValue}
@@ -117,14 +117,16 @@ function App() {
       >
         <strong>Search: </strong>
       </Search>
-      <hr />
-      <List
-        loading={isLoading}
-        list={listFiltered}
-        error={isError}
-        handleButtonClick={handleButtonClick}
-      />
-    </>
+      {
+        isError ?
+          <strong>Error</strong> :
+          <List
+            loading={isLoading}
+            list={data}
+            handleButtonClick={handleButtonClick}
+          />
+      }
+    </div>
   )
 }
 
