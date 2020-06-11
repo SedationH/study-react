@@ -1,11 +1,9 @@
-.container {
+body {
   height: 100vh;
-  padding: 20px;
-
-  background: #83a4d4;
-  /* fallback for old browsers */
   background: linear-gradient(to left, #b6fbff, #83a4d4);
-
+}
+.container {
+  padding: 20px;
   color: #171212;
 }
 
@@ -34,6 +32,7 @@
 }
 
 .button {
+  font-size: 15px;
   background: transparent;
   border: none;
   padding: 5px;
@@ -45,6 +44,11 @@
 .button:hover {
   background: #171212;
   color: #ffffff;
+}
+
+.button:hover > svg  {
+  fill: #ffffff;
+  stroke: #ffffff;
 }
 
 .button_small {

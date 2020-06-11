@@ -6,6 +6,7 @@ function Search({
   children,
   handleSearchClick
 }) {
+  console.log('Search')
   const inputRef = React.useRef()
   /**
    * 一个重要的理解就是在加载一个组件的时候，整个函数都是重新执行的，一些use方法
@@ -28,7 +29,7 @@ function Search({
           value={value}
           className="input"
         />
-        <button type="submit" className="button button_large">Search</button>
+        <button type="submit" className="button button_large">Click Me</button>
       </form>
     </>
   )

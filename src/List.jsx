@@ -1,17 +1,19 @@
 import React from 'react'
+import { ReactComponent as Check } from './check.svg'
 
 function List({
   list,
   loading,
   handleButtonClick
 }) {
+  console.log('List')
   return (
     <div>
       {
         loading ?
           <div>Loading</div> :
           list.map(item => (
-            <div key={item.objectID}  className="item">
+            <div key={item.objectID} className="item">
               <span style={{ width: '40%' }}>
                 <a href={item.url}>{item.title}</a>
               </span>
@@ -24,7 +26,7 @@ function List({
                   onClick={() => handleButtonClick(item)}
                   className="button button_small"
                 >
-                  Dismiss
+                  <Check height="18px" width="18px" />
                 </button>
               </span>
             </div>
@@ -34,4 +36,4 @@ function List({
   )
 }
 
-export default List
+export default React.memo(List)

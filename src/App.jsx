@@ -1,19 +1,28 @@
-import React, { useReducer, useState, useEffect, useCallback } from 'react';
+import React, { useReducer, useState, useEffect, useCallback, useRef } from 'react';
 import './App.css'
 import List from './List'
 import Search from './Search'
 import Axios from 'axios';
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
-
+/**
+ * 第一次便是获取上一次的值,没必要进行保存
+ */
 const useCustomHook = () => {
+
+  const isMounted = useRef(false)
+
   const [searchValue, setSearchValue] = useState(
     localStorage.getItem('search') || ''
   )
 
   useEffect(() => {
-    localStorage.setItem('search', searchValue)
-  })
+    if (isMounted.current === false) {
+      isMounted.current = true
+    } else {
+      localStorage.setItem('search', searchValue)
+    }
+  }, [searchValue])
 
   return [searchValue, setSearchValue]
 }
@@ -28,6 +37,7 @@ const useCustomHook = () => {
  */
 
 const storiesReducer = (state, action) => {
+  console.log(action.type)
   switch (action.type) {
     case 'STORIES_FETCH_INIT':
       return {
@@ -61,7 +71,8 @@ const storiesReducer = (state, action) => {
 }
 
 function App() {
-
+  console.log('APP')
+  const isFirst = useRef(true)
 
   const [searchValue, setSearchValue] = useCustomHook()
 
@@ -69,12 +80,15 @@ function App() {
     storiesReducer,
     { data: [], isLoading: false, isError: false }
   );
-  const [url, setUrl] = useState(`${API_ENDPOINT}`)
+  const [url, setUrl] = useState(`${API_ENDPOINT + searchValue}`)
 
   const { isLoading, data, isError } = stories
 
   const handleFetchStories = useCallback(() => {
-    dispatchStories({ type: 'STORIES_FETCH_INIT' });
+    if (isFirst.current) {
+      dispatchStories({ type: 'STORIES_FETCH_INIT' });
+      isFirst.current = false
+    }
 
     Axios(url)
       .then(result => {
@@ -96,12 +110,15 @@ function App() {
     setSearchValue(e.target.value)
   }
 
-  const handleButtonClick = item => {
+  /**
+   * 传入List组件的props在仅仅输入input内容的时候就不需要进行全部渲染了
+   */
+  const handleButtonClick = useCallback(item => {
     dispatchStories({
       type: 'REMOVE_STORY',
       payload: item,
     });
-  }
+  }, [])
   const handleSearchClick = e => {
     setUrl(API_ENDPOINT + searchValue)
     e.preventDefault()
