@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/SedationH/study-react/static/css/main.6a76e122.chunk.css",
+    "main.js": "/SedationH/study-react/static/js/main.ceac20f9.chunk.js",
+    "main.js.map": "/SedationH/study-react/static/js/main.ceac20f9.chunk.js.map",
+    "runtime-main.js": "/SedationH/study-react/static/js/runtime-main.cb14ea08.js",
+    "runtime-main.js.map": "/SedationH/study-react/static/js/runtime-main.cb14ea08.js.map",
+    "static/js/2.a82aa0c4.chunk.js": "/SedationH/study-react/static/js/2.a82aa0c4.chunk.js",
+    "static/js/2.a82aa0c4.chunk.js.map": "/SedationH/study-react/static/js/2.a82aa0c4.chunk.js.map",
+    "index.html": "/SedationH/study-react/index.html",
+    "precache-manifest.0ea1deb45314cd9909477242803b9c6c.js": "/SedationH/study-react/precache-manifest.0ea1deb45314cd9909477242803b9c6c.js",
+    "service-worker.js": "/SedationH/study-react/service-worker.js",
+    "static/css/main.6a76e122.chunk.css.map": "/SedationH/study-react/static/css/main.6a76e122.chunk.css.map",
+    "static/js/2.a82aa0c4.chunk.js.LICENSE.txt": "/SedationH/study-react/static/js/2.a82aa0c4.chunk.js.LICENSE.txt",
+    "static/media/check.4ca94fa5.svg": "/SedationH/study-react/static/media/check.4ca94fa5.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cb14ea08.js",
+    "static/js/2.a82aa0c4.chunk.js",
+    "static/css/main.6a76e122.chunk.css",
+    "static/js/main.ceac20f9.chunk.js"
+  ]
+}
